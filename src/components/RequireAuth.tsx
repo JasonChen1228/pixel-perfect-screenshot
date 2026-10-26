@@ -4,7 +4,8 @@ import type { User } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
 
-type AuthState = { status: "loading" } | { status: "signed-out" } | { status: "signed-in"; user: User };
+type AuthState =
+  { status: "loading" } | { status: "signed-out" } | { status: "signed-in"; user: User };
 
 export type AuthContext = { user: User };
 

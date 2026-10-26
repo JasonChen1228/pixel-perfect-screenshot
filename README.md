@@ -22,3 +22,12 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Deploying to Vercel (static SPA)
+
+This app is a plain Vite + React Router single-page app — no server, no SSR.
+
+- **Build:** `vite build` → static files in `dist/`
+- **SPA fallback:** `vercel.json` rewrites every non-file path to `index.html`, so deep links like `/app` resolve client-side.
+- **Environment variables:** set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in the Vercel project (they are baked in at build time).
+- **Supabase auth:** add your Vercel domain (e.g. `https://<your-app>.vercel.app/app`) to Supabase → Authentication → URL Configuration → Redirect URLs, so sign-up confirmation emails redirect correctly.
