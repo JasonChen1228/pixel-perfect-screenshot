@@ -29,5 +29,6 @@ This app is a plain Vite + React Router single-page app — no server, no SSR.
 
 - **Build:** `vite build` → static files in `dist/`
 - **SPA fallback:** `vercel.json` rewrites every non-file path to `index.html`, so deep links like `/app` resolve client-side.
-- **Environment variables:** set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in the Vercel project (they are baked in at build time).
+- **Backend:** the app talks to its own Supabase project (`panwgwqirxsyxnkmpfkt`) through a single browser client in `src/integrations/supabase/client.ts`, configured only from environment variables.
+- **Environment variables:** set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in the Vercel project (they are baked in at build time). `VITE_SUPABASE_PUBLISHABLE_KEY` is the browser-safe `sb_publishable_*` key, which replaces the old anon key.
 - **Supabase auth:** add your Vercel domain (e.g. `https://<your-app>.vercel.app/app`) to Supabase → Authentication → URL Configuration → Redirect URLs, so sign-up confirmation emails redirect correctly.
