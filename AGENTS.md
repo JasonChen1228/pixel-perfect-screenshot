@@ -10,5 +10,6 @@
 <!-- LOVABLE:END -->
 
 ## Project rules
-- Signed-in pages live under `src/routes/_authenticated/` (client-only gate redirecting to `/signin`) — keeps auth checks in one place.
+- This is a plain Vite + React Router SPA (no SSR). Routes are declared in `src/router.tsx`; pages live in `src/pages/`.
+- Signed-in pages are nested under the `<RequireAuth />` route in `src/router.tsx` (client-only gate redirecting to `/signin`) — keeps auth checks in one place.
 - Use only the built-in auth users; no custom tables until a later milestone asks for them — keeps v1 scope minimal and the backend portable.

@@ -1,26 +1,24 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Brand } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
+import { useAuthUser } from "@/components/RequireAuth";
+import { usePageMeta } from "@/lib/head";
 
-export const Route = createFileRoute("/_authenticated/app")({
-  head: () => ({
+export default function Dashboard() {
+  usePageMeta({
+    title: "Dashboard — Flight Price Notifier",
+    description: "Your Flight Price Notifier route-tracking dashboard.",
     meta: [
-      { title: "Dashboard — Flight Price Notifier" },
-      { name: "description", content: "Your Flight Price Notifier route-tracking dashboard." },
       { property: "og:title", content: "Dashboard — Flight Price Notifier" },
       { property: "og:description", content: "Your route-tracking dashboard." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
     ],
-  }),
-  component: AppHome,
-});
-
-function AppHome() {
-  const { user } = Route.useRouteContext();
+  });
+  const user = useAuthUser();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -28,7 +26,7 @@ function AppHome() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/signin", replace: true });
+    navigate("/signin", { replace: true });
   }
 
   return (

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { Brand } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ export function AuthForm({ mode }: { mode: "signin" | "signup" }) {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       }
-      navigate({ to: "/app", replace: true });
+      navigate("/app", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
