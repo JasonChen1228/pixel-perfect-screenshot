@@ -6,6 +6,7 @@
 
 @theme inline {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", "Cormorant", ui-serif, Georgia, serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -33,31 +34,54 @@
   --color-ring: var(--ring);
 }
 
+/* Dusk courtyard theme: twilight sky over warm limestone, lit by candle lanterns. */
 :root {
-  --radius: 0.75rem;
-  --background: oklch(0.13 0.012 285);
-  --foreground: oklch(0.97 0.005 285);
-  --card: oklch(0.17 0.015 285);
-  --card-foreground: oklch(0.97 0.005 285);
-  --popover: oklch(0.17 0.015 285);
-  --popover-foreground: oklch(0.97 0.005 285);
-  --primary: oklch(0.62 0.22 293);
-  --primary-foreground: oklch(0.99 0 0);
-  --primary-glow: oklch(0.74 0.17 300);
-  --secondary: oklch(0.22 0.02 285);
-  --secondary-foreground: oklch(0.95 0.005 285);
-  --muted: oklch(0.22 0.02 285);
-  --muted-foreground: oklch(0.68 0.02 285);
-  --accent: oklch(0.25 0.04 293);
-  --accent-foreground: oklch(0.97 0.005 285);
-  --destructive: oklch(0.65 0.2 25);
+  --radius: 0.875rem;
+  /* Night-time limestone ground */
+  --background: oklch(0.165 0.012 60);
+  --foreground: oklch(0.95 0.02 80);
+  /* Lit stone surfaces */
+  --card: oklch(0.215 0.016 62 / 0.78);
+  --card-foreground: oklch(0.95 0.02 80);
+  --popover: oklch(0.215 0.016 62);
+  --popover-foreground: oklch(0.95 0.02 80);
+  /* Candlelight amber */
+  --primary: oklch(0.8 0.125 72);
+  --primary-foreground: oklch(0.2 0.03 55);
+  --primary-glow: oklch(0.86 0.11 78);
+  /* Weathered sandstone */
+  --secondary: oklch(0.27 0.02 65);
+  --secondary-foreground: oklch(0.94 0.02 80);
+  --muted: oklch(0.26 0.018 65);
+  --muted-foreground: oklch(0.76 0.03 70);
+  /* Garden olive / palm green */
+  --accent: oklch(0.32 0.045 125);
+  --accent-foreground: oklch(0.95 0.02 80);
+  --destructive: oklch(0.68 0.17 32);
   --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.27 0.02 285);
-  --input: oklch(0.27 0.02 285);
-  --ring: oklch(0.62 0.22 293);
-  --gradient-hero: radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in oklab, var(--primary) 35%, transparent), transparent 70%);
-  --gradient-text: linear-gradient(120deg, var(--foreground), var(--primary-glow));
-  --shadow-glow: 0 10px 40px -10px color-mix(in oklab, var(--primary) 60%, transparent);
+  --border: oklch(0.34 0.025 65);
+  --input: oklch(0.36 0.025 65);
+  --ring: oklch(0.8 0.125 72);
+
+  /* Twilight sky fading through a rose-peach horizon into the lit courtyard */
+  --gradient-hero:
+    radial-gradient(ellipse 70% 38% at 50% 46%, oklch(0.5 0.08 50 / 0.45), transparent 70%),
+    radial-gradient(ellipse 38% 26% at 10% 96%, oklch(0.78 0.14 68 / 0.2), transparent 72%),
+    radial-gradient(ellipse 38% 26% at 90% 96%, oklch(0.78 0.14 68 / 0.2), transparent 72%),
+    radial-gradient(ellipse 60% 22% at 50% 104%, oklch(0.72 0.11 65 / 0.14), transparent 75%),
+    linear-gradient(
+      180deg,
+      oklch(0.23 0.035 280) 0%,
+      oklch(0.28 0.045 320) 22%,
+      oklch(0.34 0.06 25) 40%,
+      oklch(0.25 0.03 50) 58%,
+      oklch(0.165 0.012 60) 78%
+    );
+  --gradient-text: linear-gradient(115deg, oklch(0.97 0.02 85) 20%, oklch(0.87 0.1 75) 75%, oklch(0.82 0.09 40));
+  /* Warm lantern halo */
+  --shadow-glow:
+    0 0 0 1px oklch(0.8 0.125 72 / 0.25),
+    0 12px 42px -10px oklch(0.78 0.14 68 / 0.6);
 }
 
 @layer base {
@@ -68,9 +92,21 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0.005em;
+  }
+  ::selection {
+    background: oklch(0.8 0.125 72 / 0.35);
+  }
 }
 
-@utility bg-hero { background-image: var(--gradient-hero); }
+@utility bg-hero {
+  background-color: var(--background);
+  background-image: var(--gradient-hero);
+  background-repeat: no-repeat;
+  background-size: 100% max(100%, 100vh);
+}
 @utility text-gradient {
   background-image: var(--gradient-text);
   -webkit-background-clip: text;
