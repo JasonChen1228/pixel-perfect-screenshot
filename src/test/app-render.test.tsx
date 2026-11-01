@@ -54,10 +54,17 @@ describe("App rendering", () => {
     expect(router.state.location.pathname).toBe("/signin");
   });
 
-  it("shows the dashboard at /app for a signed-in user", async () => {
+  it("shows the dashboard with both plans at /app for a signed-in user", async () => {
     getUser.mockResolvedValue({ data: { user: { id: "u1", email: "a@b.co" } } });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(JSON.stringify({ subscriptions: [] }))),
+    );
     renderAt("/app");
     expect(await screen.findByRole("heading", { name: "Hi a@b.co" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "台北 ✈ 東京" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "台北 ✈ 首爾" })).toBeInTheDocument();
+    vi.unstubAllGlobals();
   });
 
   it("shows the 404 page for unknown paths", async () => {

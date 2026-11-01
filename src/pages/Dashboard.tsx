@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Brand } from "@/components/Brand";
 import { Button } from "@/components/ui/button";
+import { PlanCards } from "@/components/PlanCards";
 import { useAuthUser } from "@/components/RequireAuth";
 import { usePageMeta } from "@/lib/head";
 
@@ -33,14 +34,25 @@ export default function Dashboard() {
     <div className="flex min-h-screen flex-col bg-hero">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-5">
         <Brand />
-        <Button variant="outline" onClick={signOut}>Sign out / 登出</Button>
+        <Button variant="outline" onClick={signOut}>
+          Sign out / 登出
+        </Button>
       </header>
-      <main className="mx-auto w-full max-w-3xl flex-1 px-6 pt-20">
-        <div className="animate-fade-up rounded-2xl border border-border bg-card p-10">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-6 pb-24 pt-16">
+        <div className="animate-fade-up mb-8">
           <h1 className="text-3xl font-bold tracking-tight">Hi {user.email}</h1>
-          <p className="mt-4 text-lg">你的航線追蹤儀表板即將上線 — 下一個里程碑會加上訂閱航線的功能。</p>
-          <p className="mt-2 text-sm text-muted-foreground">Your dashboard is coming soon. Route-subscription will be added in the next milestone.</p>
+          <p className="mt-3 text-lg">
+            選一條航線、設定目標價，票價達標時我們會寄 email 到這個信箱。
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Pick a route and a target price (TWD) — we'll email you when the fare drops to it.
+          </p>
         </div>
+        {user.email ? (
+          <PlanCards email={user.email} />
+        ) : (
+          <p className="text-sm text-muted-foreground">你的帳號沒有 email，無法訂閱通知。</p>
+        )}
       </main>
     </div>
   );
