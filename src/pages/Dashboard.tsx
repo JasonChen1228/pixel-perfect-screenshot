@@ -38,7 +38,7 @@ export default function Dashboard() {
           Sign out / 登出
         </Button>
       </header>
-      <main className="mx-auto w-full max-w-4xl flex-1 px-6 pb-24 pt-16">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-6 pb-24 pt-16">
         <div className="animate-fade-up mb-8">
           <h1 className="text-3xl font-bold tracking-tight">Hi {user.email}</h1>
           <p className="mt-3 text-lg">

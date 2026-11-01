@@ -29,7 +29,7 @@ export function PlanCards({ email }: { email: string }) {
           無法載入你的訂閱狀態，請稍後重新整理。Couldn't load your subscriptions.
         </p>
       )}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {PLANS.map((plan) => (
           <PlanCard
             key={plan.name}

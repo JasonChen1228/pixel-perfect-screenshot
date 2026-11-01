@@ -21,7 +21,7 @@ function jsonResponse(body: unknown, status = 200) {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("PlanCards", () => {
-  it("shows both plans and marks an existing subscription", async () => {
+  it("shows every plan and marks an existing subscription", async () => {
     const fetchMock = vi.fn(() =>
       jsonResponse({
         subscriptions: [
@@ -41,7 +41,7 @@ describe("PlanCards", () => {
     expect(await screen.findByText("已訂閱")).toBeInTheDocument();
     expect(screen.getByText("NT$12,000")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "更新目標價" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "開始追蹤" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "開始追蹤" })).toHaveLength(2);
     expect(fetchMock).toHaveBeenCalledWith(
       `${FLIGHT_API_URL}/subscriptions?email=me%40example.com`,
     );
