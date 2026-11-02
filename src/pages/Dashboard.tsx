@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Brand } from "@/components/Brand";
@@ -21,6 +21,9 @@ export default function Dashboard() {
   });
   const user = useAuthUser();
   const navigate = useNavigate();
+  // Set by the flight-ecpay-result redirect after ECPay's cashier (?purchase=success|failed).
+  const [searchParams] = useSearchParams();
+  const purchase = searchParams.get("purchase");
   const queryClient = useQueryClient();
 
   async function signOut() {
@@ -48,8 +51,21 @@ export default function Dashboard() {
             Pick a route and a target price (TWD) — we'll email you when the fare drops to it.
           </p>
         </div>
+        {purchase === "success" && (
+          <p role="status" className="mb-6 rounded-xl border border-primary/40 bg-card p-4 text-sm">
+            付款完成！訂閱狀態會在綠界通知後幾秒內更新為「已訂閱」。
+          </p>
+        )}
+        {purchase === "failed" && (
+          <p
+            role="alert"
+            className="mb-6 rounded-xl border border-destructive/50 bg-card p-4 text-sm"
+          >
+            付款未完成，你可以在下方方案按「完成付款」再試一次。
+          </p>
+        )}
         {user.email ? (
-          <PlanCards email={user.email} />
+          <PlanCards email={user.email} pollPending={purchase === "success"} />
         ) : (
           <p className="text-sm text-muted-foreground">你的帳號沒有 email，無法訂閱通知。</p>
         )}

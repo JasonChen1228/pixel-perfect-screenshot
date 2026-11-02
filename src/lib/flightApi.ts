@@ -42,15 +42,31 @@ export const PLANS: Plan[] = [
   },
 ];
 
+// Display-only monthly fee. The amount actually charged is `amount` in the
+// `flight/ecpay` secret (read by the save_subscription Lambda) — keep them in sync.
+export const MONTHLY_FEE_TWD = 300;
+
+// M2 lifecycle: pending_payment → active ⇄ (target updates) → cancelled (grace) → expired.
+// Rows written before M2 have no status; they're treated as pending_payment.
+export type SubscriptionStatus = "pending_payment" | "active" | "cancelled" | "expired";
+
 export type Subscription = {
   email: string;
   route: string;
   plan_name: PlanName;
   target_price: number;
   currency: "TWD";
+  subscription_status?: SubscriptionStatus;
+  current_period_end?: string;
+  current_period_end_date?: string;
   created_at?: string;
   updated_at?: string;
 };
+
+export function statusOf(sub: Subscription | undefined): SubscriptionStatus | "none" {
+  if (!sub) return "none";
+  return sub.subscription_status ?? "pending_payment";
+}
 
 async function readJson(res: Response) {
   const body = await res.json().catch(() => ({}));
@@ -65,12 +81,40 @@ export async function listSubscriptions(email: string): Promise<Subscription[]> 
   return body.subscriptions ?? [];
 }
 
+// POST /subscribe answers in one of two shapes:
+// - text/html: an auto-submitting ECPay checkout form (new / unpaid / expired plan)
+// - application/json: an in-place target update (active, or cancelled but still paid-through)
+export type SaveResult =
+  { kind: "checkout"; html: string } | { kind: "updated"; subscription: Subscription };
+
 export async function saveSubscription(input: {
   email: string;
   plan_name: PlanName;
   target_price: number;
-}): Promise<Subscription> {
+}): Promise<SaveResult> {
   const res = await fetch(`${FLIGHT_API_URL}/subscribe`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (res.ok && (res.headers.get("content-type") ?? "").includes("text/html")) {
+    return { kind: "checkout", html: await res.text() };
+  }
+  return { kind: "updated", subscription: (await readJson(res)) as Subscription };
+}
+
+// Replace the page with ECPay's form; its inline script POSTs the browser to the cashier.
+export function goToCheckout(html: string) {
+  document.open();
+  document.write(html);
+  document.close();
+}
+
+export async function cancelSubscription(input: {
+  email: string;
+  route: string;
+}): Promise<Subscription> {
+  const res = await fetch(`${FLIGHT_API_URL}/cancel`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(input),
